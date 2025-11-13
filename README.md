@@ -25,8 +25,26 @@ UnifiedHOInteraction provides the following folders and models:
 	
 
 ## Download pretrained models
-- TBD
+1. Download the pretrained model (zip file) from the link below:   https://www.dropbox.com/scl/fi/6z7d6x3mscsh5hsqa4tqn/UnifiedHOInteraction_models.zip?rlkey=zfg29fvkmpd57isg1y5msuvj6&st=5j2qbm75&dl=0
+   
+2. Unzip the downloaded file into the following directory:
+   `UnifiedHOInteraction/Server`
 
+3. After extraction, the folder structure should look like this:
+   ```
+   UnifiedHOInteraction/
+   └── Server/
+       └── handtracker_wilor/
+           ├── pretrained_models/
+               ├── wilor_final.ckpt
+       └── handtracker/
+           ├── checkpoint/
+               ├── SAR_AGCN4_cross_wBGaug_extraTrue_resnet34_s0_Epochs50.ckpt
+			       ├── checkpoint.pth
+       └── gestureclassifier/
+           ├── checkpoints/
+               ├── checkopint.tar
+	```
 
 
 ## Run

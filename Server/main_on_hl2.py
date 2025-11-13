@@ -44,7 +44,7 @@ pv_fps = 30
 buffer_size = 10
 
 # process depth image per n frame
-num_depth_count = 10    # 0 for only rgb
+num_depth_count = 1    # 0 for only rgb
 
 # gesture sequence args
 seq_len = 16

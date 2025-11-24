@@ -49,11 +49,14 @@ UnifiedHOInteraction provides the following folders and models:
 
 ## Run
 
-### Server
-- TBD
-
 ### Device
 - TBD
+
+### Server
+- Run device application first, then execute following module.
+   ```
+   python main_on_hl2.py
+   ```
 
 
 ## Create custom dataset and Train

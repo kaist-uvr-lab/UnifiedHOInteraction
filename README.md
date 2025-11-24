@@ -50,10 +50,11 @@ UnifiedHOInteraction provides the following folders and models:
 ## Run
 
 ### Device
-- TBD
+- Build the unity application on Hololens 2.
+
 
 ### Server
-- Run device application first, then execute following module.
+- Run the device application first, then execute the following module.
    ```
    python main_on_hl2.py
    ```
@@ -67,7 +68,6 @@ UnifiedHOInteraction provides the following folders and models:
 - This work was supported by Institute of Information & communications Technology Planning & Evaluation(IITP) grant funded by the Korea government(MSIT) (RS-2019-II191270, WISE AR UI/UX Platform Development for Smartglasses)
 
 - The sensing data acquisition using HoloLens 2 Research Mode was implemented with reference to [this project](https://github.com/jdibenes/hl2ss/).
-
 
 
 ## Lisense

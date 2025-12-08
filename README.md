@@ -51,8 +51,8 @@ UnifiedHOInteraction provides the following folders and models:
 
 ### Device
 - Build the unity application on Hololens 2
-- Tested on Unity version 2022.3.60f1
-
+- Tested on Unity version 2022.3.60f1 with following setup
+	- 
 
 
 ### Server

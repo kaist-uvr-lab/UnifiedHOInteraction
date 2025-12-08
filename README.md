@@ -58,6 +58,7 @@ UnifiedHOInteraction provides the following folders and models:
 ### Server
 - Run the device application first, then execute the following module.
    ```
+   cd server
    python main_on_hl2.py
    ```
 

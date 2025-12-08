@@ -10,8 +10,6 @@ UnifiedHOInteraction provides the following folders and models:
 - `Server`: Server-side Python project
 - `CustomDatasetToolkit`: Custom hand gesture dataset generation toolkit
 
-- `Server/pretrained_models/`: ...
-
 
 ## Installation
 

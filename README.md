@@ -1,6 +1,6 @@
 # UnifiedHOInteraction
 
-This repository contains instructions on generating custom dataset and code of the work `A Unified Hand and Gesture Tracking via Offloading Framework for Object-mediated Interaction in Wearable AR` presented at .
+This repository contains instructions on generating custom dataset and code of the work `A Unified Hand and Gesture Tracking via Offloading Framework for Object-mediated Interaction in Wearable AR` presented at ().
 
 
 ## Overview

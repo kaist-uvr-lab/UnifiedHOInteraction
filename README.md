@@ -70,7 +70,7 @@ UnifiedHOInteraction provides the following folders and models:
 ## Acknowledgement
 - This work was supported by Institute of Information & communications Technology Planning & Evaluation(IITP) grant funded by the Korea government(MSIT) (RS-2019-II191270, WISE AR UI/UX Platform Development for Smartglasses)
 
-- The sensing data acquisition using HoloLens 2 Research Mode was implemented with reference to [this project](https://github.com/jdibenes/hl2ss/).
+- The sensing data acquisition using HoloLens 2 Research Mode was implemented with reference to [project](https://github.com/jdibenes/hl2ss/).
 
 
 ## Lisense

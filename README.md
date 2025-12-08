@@ -50,7 +50,7 @@ UnifiedHOInteraction provides the following folders and models:
 ## Run
 
 ### Device
-- Build the unity application on Hololens 2. 
+- Build the unity application on Hololens 2
 - Tested on Unity version 2022.3.60f1
 
 

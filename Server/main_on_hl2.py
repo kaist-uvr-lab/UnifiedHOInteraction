@@ -113,14 +113,14 @@ def main():
             else:
                 flag_depth = False
 
-            # --- Receive Input from HoloLens 2 ---
+            # --- Receive Image Input from HoloLens 2 ---
             result = receive_images(init_variables, flag_depth)
             if result is None:
                 continue
 
             color, depth = result
 
-            # Display RGB and Depth (scaled)
+            # Display RGB and scaled Depth
             cv2.imshow('RGB', color)
             if flag_depth:
                 cv2.imshow('Depth', depth / max_depth)

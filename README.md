@@ -47,7 +47,7 @@ UnifiedHOInteraction provides the following folders and models:
 
 ## Run
 
-- Server PC and Device must be connected on same network.
+* The Server PC and Device must be connected to the **same network** for communication.
 
 ### Device
 - Set developer mode on Hololens 2

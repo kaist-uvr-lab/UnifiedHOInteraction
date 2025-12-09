@@ -28,7 +28,7 @@ import hl2ss_utilities
 # ==============================================================================
 
 # Model Parameters
-CKPT_NAME = "checkpoint-40.tar"
+CKPT_NAME = "checkpoint-40.tar"     # handtracker/checkpoint/{...}/{CKPT_NAME}
 FLAG_INTERACTION_DETECT = False
 
 # HoloLens 2 Connection Settings

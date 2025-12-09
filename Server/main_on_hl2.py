@@ -130,7 +130,7 @@ def main():
             color = cv2.resize(color, dsize=(640, 360), interpolation=cv2.INTER_AREA)
 
             # --- Process Hand Tracking ---
-            outs = track_hand.run(np.copy(color))  # Returns uvd_right (right hand only)
+            outs = track_hand.run(np.copy(color))  # Currently returns uvd_right (right hand only)
             if not isinstance(outs, np.ndarray):
                 continue
 

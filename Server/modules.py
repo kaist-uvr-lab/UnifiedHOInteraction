@@ -247,7 +247,7 @@ class GestureClassfier:
 # 4. Hand Tracker Classes
 # ==============================================================================
 
-class HandTracker_our_v2:
+class HandTracker_v2:
     def __init__(self):
         self.model_hand = HandTracker_wilor()
 
@@ -255,7 +255,7 @@ class HandTracker_our_v2:
         return self.model_hand.run(input_img)
 
 
-class HandTracker_our:
+class HandTracker:
     def __init__(self):
         self.track_hand = HandTracker()
 

@@ -12,7 +12,7 @@ import keyboard
 from PIL import Image, ImageDraw, ImageFont
 
 # Local modules
-from modules import HandTracker_our, HandTracker_our_v2, GestureClassfier, ObjTracker
+from modules import HandTracker, HandTracker_v2, GestureClassfier, ObjTracker
 from utils.visualize import draw_2d_skeleton
 
 # HL2SS modules
@@ -57,8 +57,8 @@ THRESHOLD_NUM = 5
 
 def main():
     # --- Initialize Models ---
-    track_hand_v1 = HandTracker_our()
-    track_hand_v2 = HandTracker_our_v2()
+    track_hand_v1 = HandTracker()
+    track_hand_v2 = HandTracker_v2()
     flag_hand_model = True  # Default to v2
 
     gesture_ckpt_path = f"./gestureclassifier/checkpoints/{CKPT_NAME}"

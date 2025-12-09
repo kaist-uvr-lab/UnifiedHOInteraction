@@ -50,20 +50,21 @@ UnifiedHOInteraction provides the following folders and models:
 * The Server PC and Device must be connected to the **same network** for communication.
 
 ### Device
-- Set developer mode on Hololens 2
-- Record wifi IP address
-- Build the unity application on Hololens 2
-- Tested on Unity version 2022.3.60f1 with following setup
 
+* Enable **Developer Mode** on the Hololens 2.
+* Record the device's **Wi-Fi IP address**.
+* Build and deploy the Unity application onto the Hololens 2.
+* **Tested Environment:** Tested on **Unity version 2022.3.60f1** with the following setup: [Specific setup details TBD, e.g., MRTK version, build target].
 
 
 ### Server
-- Update HOST_ADDRESS in main_on_hl2.py to Device IP adress.
-- Run the device application first, then execute the following module.
-   ```
-   cd server
-   python main_on_hl2.py
-   ```
+
+* Update the `HOST_ADDRESS` variable in `main_on_hl2.py` with the Device's recorded **IP address**.
+* **Run the device application first**, then execute the following server module:
+    ```bash
+    cd server
+    python main_on_hl2.py
+    ```
 
 
 ## Create custom dataset and Train

@@ -105,7 +105,7 @@ def main():
 
             idx += 1
 
-            # Determine whether to receive/process depth image this frame
+            # Periodically receive depth image
             idx_depth += 1
             if idx_depth == NUM_DEPTH_COUNT:
                 idx_depth = 0

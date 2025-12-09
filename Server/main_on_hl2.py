@@ -250,7 +250,6 @@ def main():
         producer.stop(hl2ss.StreamPort.PERSONAL_VIDEO)
         producer.stop(hl2ss.StreamPort.RM_DEPTH_AHAT)
 
-        # Stop subsystem
         hl2ss_lnm.stop_subsystem_pv(HOST_ADDRESS, hl2ss.StreamPort.PERSONAL_VIDEO)
         cv2.destroyAllWindows()
 

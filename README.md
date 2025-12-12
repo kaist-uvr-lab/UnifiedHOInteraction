@@ -68,7 +68,7 @@ UnifiedHOInteraction provides the following folders and models:
 
 
 ## Create custom dataset and Train
-- TBD
+- TBD (~2026.01)
 
 
 ## Acknowledgement

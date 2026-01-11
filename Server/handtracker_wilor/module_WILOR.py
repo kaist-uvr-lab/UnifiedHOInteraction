@@ -112,7 +112,6 @@ class HandTracker_wilor():
         self.right = None
 
 
-
         ## do first iteration
         log_event("start")
         testImg = cv2.imread(os.path.join(curr_dir, './demo_img/test1.jpg'))
@@ -139,7 +138,8 @@ class HandTracker_wilor():
 
 
 
-    def run(self, img, flag_time=False):
+    def run(self, img, cnt=0, flag_time=False, flag_mesh=True):
+
         log_event("start", flag_time)
         if img.shape[-1] == 4:
             img = img[:, :, :-1]
@@ -203,6 +203,24 @@ class HandTracker_wilor():
 
         self.prev_uvd = all_uvds.copy()
         log_event("postprocess", flag_time)
+
+        if flag_mesh and len(all_verts) > 0:
+            misc_args = dict(
+                mesh_base_color=LIGHT_PURPLE,
+                scene_bg_color=(1, 1, 1),
+                focal_length=self.scaled_focal_length,
+            )
+            cam_view = self.renderer.render_rgba_multiple(all_verts, cam_t=all_cam_t, render_res=img_size[n],
+                                                     is_right=all_right, **misc_args)
+            # Overlay image
+            input_img = img.astype(np.float32)[:, :, ::-1] / 255.0
+            input_img = np.concatenate([input_img, np.ones_like(input_img[:, :, :1])], axis=2)  # Add alpha channel
+            input_img_overlay = input_img[:, :, :3] * (1 - cam_view[:, :, 3:]) + cam_view[:, :, :3] * cam_view[:, :, 3:]
+
+            output_img = input_img_overlay[:, :, ::-1]
+            cv2.imwrite(os.path.join("./output", "mesh", f'mesh_{cnt}.jpg'), 255 * output_img)
+            cv2.imshow("mesh result", output_img)
+
 
         ## process only right hand visible
         indices = np.where(np.asarray(all_right) == 1)[0]  ### check. 0: left, 1: right

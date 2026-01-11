@@ -82,7 +82,7 @@ def encode_hand_data(hand_result):
     return handDataPackage
 
 
-class HandTracker():
+class HandTracker_SARTE():
     def __init__(self):
         self.tester = Tester()
         self.tester._make_model()

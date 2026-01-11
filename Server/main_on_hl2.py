@@ -29,10 +29,9 @@ import hl2ss_utilities
 
 # Model Parameters
 CKPT_NAME = "checkpoint-40.tar"     # handtracker/checkpoint/{...}/{CKPT_NAME}
-FLAG_INTERACTION_DETECT = False
 
 # HoloLens 2 Connection Settings
-HOST_ADDRESS = '192.168.50.31'
+HOST_ADDRESS = '192.168.0.112'
 CALIBRATION_PATH = 'calibration'
 
 # Front RGB Camera Parameters
@@ -57,16 +56,16 @@ THRESHOLD_NUM = 5
 
 def main():
     # --- Initialize Models ---
-    track_hand_v1 = HandTracker()
     track_hand_v2 = HandTracker_v2()
+    # track_hand_v1 = HandTracker()
     flag_hand_model = True  # Default to v2
+    flag_save = True
 
     gesture_ckpt_path = f"./gestureclassifier/checkpoints/{CKPT_NAME}"
     track_gesture = GestureClassfier(ckpt=gesture_ckpt_path, seq_len=SEQ_LEN, model_opt=1)
 
     track_obj = None
-    if FLAG_INTERACTION_DETECT:
-        track_obj = ObjTracker()
+    track_obj = ObjTracker()
 
     # --- Initialize Communication with HoloLens 2 ---
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -97,11 +96,12 @@ def main():
             # Switch hand tracking model
             if flag_hand_model:
                 track_hand = track_hand_v2
-            else:
-                track_hand = track_hand_v1
+            # else:
+            #     track_hand = track_hand_v1
 
             if keyboard.is_pressed('space'):
                 flag_hand_model = not flag_hand_model
+                print("hand model switched")
 
             idx += 1
 
@@ -123,14 +123,19 @@ def main():
             # Display RGB and scaled Depth
             cv2.imshow('RGB', color)
             if flag_depth:
-                cv2.imshow('Depth', depth / max_depth)
+                depth_norm = (depth / max_depth * 255).astype('uint8')
+                cv2.imshow('Depth', depth_norm)
+
+                if flag_save:
+                    cv2.imwrite(os.path.join("./output", "rgb", f"rgb_{idx}.png"), color)
+                    cv2.imwrite(os.path.join("./output", "depth", f"depth_{idx}.png"), depth_norm)
             cv2.waitKey(1)
 
             # Resize color image for model input
             color = cv2.resize(color, dsize=(640, 360), interpolation=cv2.INTER_AREA)
 
             # --- Process Hand Tracking ---
-            outs = track_hand.run(np.copy(color))  # Currently returns uvd_right (right hand only)
+            outs = track_hand.run(np.copy(color), cnt=idx)  # Currently returns uvd_right (right hand only)
             if not isinstance(outs, np.ndarray):
                 continue
 
@@ -145,10 +150,10 @@ def main():
             # If an object is within 10cm of the palm in 2D space, activate gesture recognizer.
             flag_gesture = False
 
-            if flag_depth and FLAG_INTERACTION_DETECT:
+            if flag_depth:
                 uv_wrist = outs[0, :-1]
 
-                if int(uv_wrist[1]) > PV_HEIGHT or int(uv_wrist[0]) > PV_WIDTH:
+                if int(uv_wrist[1]) >= PV_HEIGHT or int(uv_wrist[0]) >= PV_WIDTH:
                     flag_gesture = False
                 else:
                     d_wrist = depth[int(uv_wrist[1]), int(uv_wrist[0])]
@@ -187,15 +192,17 @@ def main():
                                 flag_gesture = False
 
                         cv2.imshow("obj", vis_obj)
+                        if flag_save:
+                            cv2.imwrite(os.path.join("./output", "obj", f"obj_{idx}.png"), vis_obj)
 
             # --- Run Gesture Recognition ---
             # Run if interaction flag is set OR interaction detection is disabled
             gesture = None
-            if flag_gesture or not FLAG_INTERACTION_DETECT:
+            gesture_idx = -1
+            if flag_gesture:
                 if len(queue_righthand) >= SEQ_LEN:
                     gesture_idx, gesture = track_gesture.run(queue_righthand)
-            else:
-                gesture = None
+
 
             # Validate gesture (must be detected consistently)
             if prev_gesture == gesture and gesture != 'Natural':
@@ -210,6 +217,8 @@ def main():
 
             # --- Visualize Skeleton and Gesture ---
             color = draw_2d_skeleton(color, outs[:, :2])
+            if flag_save:
+                cv2.imwrite(os.path.join("./output", "joints", f"joints_{idx}.png"), color)
 
             if valid_gesture is not None and valid_gesture != "Natural":
                 cv2.putText(color, f'{valid_gesture.upper()}',

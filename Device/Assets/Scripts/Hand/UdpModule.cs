@@ -56,36 +56,39 @@ public class UdpModule : MonoBehaviour
                 Array.Copy(dataArray, 0, handPose, 0, 63);
 
                 double gestureIdx = dataArray[63];
-                double pythonTime = dataArray[64];
+
+                handTemplate.GetInputMessage(handPose, (int)gestureIdx);
 
 
-                double unityTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(); // ms 단위
-                double latency = unityTime - pythonTime;
+                // 🔹 지연 시간 계산
+                // double pythonTime = dataArray[64];
+                // double unityTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(); // ms 단위
+                // double latency = unityTime - pythonTime;
 
-                lock (latencyQueue)
-                {
-                    latencyQueue.Enqueue(latency);
-                    if (latencyQueue.Count > maxSamples)
-                        latencyQueue.Dequeue();
-                }
+                // lock (latencyQueue)
+                // {
+                //     latencyQueue.Enqueue(latency);
+                //     if (latencyQueue.Count > maxSamples)
+                //         latencyQueue.Dequeue();
+                // }
 
-                // 🔹 평균 계산
-                double avgLatency;
-                lock (latencyQueue)
-                {
-                    avgLatency = 0;
-                    foreach (var l in latencyQueue)
-                        avgLatency += l;
-                    avgLatency /= latencyQueue.Count;
-                }
+                // // 🔹 평균 계산
+                // double avgLatency;
+                // lock (latencyQueue)
+                // {
+                //     avgLatency = 0;
+                //     foreach (var l in latencyQueue)
+                //         avgLatency += l;
+                //     avgLatency /= latencyQueue.Count;
+                // }
 
 
-                // UI 업데이트는 메인 스레드에서만 가능하므로 변수에 저장
-                UnityMainThreadDispatcher.Instance().Enqueue(() =>
-                {
-                    timeText.text = $"Latency : {avgLatency:F2} ms";
+                // // UI 업데이트는 메인 스레드에서만 가능하므로 변수에 저장
+                // UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                // {
+                //     timeText.text = $"Latency : {avgLatency:F2} ms";
 
-                });
+                // });
 
 
             }

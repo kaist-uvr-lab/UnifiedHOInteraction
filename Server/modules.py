@@ -11,7 +11,7 @@ import mediapipe as mp
 from ultralytics import YOLO
 
 # Local imports
-from handtracker.module_SARTE import HandTracker
+from handtracker.module_SARTE import HandTracker_SARTE
 from handtracker_wilor.module_WILOR import HandTracker_wilor
 from gestureclassifier.model_update import create_model
 
@@ -251,14 +251,14 @@ class HandTracker_v2:
     def __init__(self):
         self.model_hand = HandTracker_wilor()
 
-    def run(self, input_img):
-        return self.model_hand.run(input_img)
+    def run(self, input_img, cnt=0):
+        return self.model_hand.run(input_img, cnt=cnt)
 
 
 class HandTracker:
     def __init__(self):
-        self.track_hand = HandTracker()
+        self.track_hand = HandTracker_SARTE()
 
-    def run(self, input_img):
+    def run(self, input_img, cnt=0):
         result_hand = self.track_hand.Process_single_newroi(input_img)
         return result_hand

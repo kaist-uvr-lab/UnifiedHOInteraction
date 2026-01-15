@@ -15,7 +15,7 @@ public class UdpModule : MonoBehaviour
     private UdpClient udpClient;
     private Thread receiveThread;
     private int port = 5005;
-    public HandModuleTemplate handTemplate;
+    public DemoManager demoManager;
     public TextMeshProUGUI timeText;
     string debugText;
 
@@ -48,16 +48,21 @@ public class UdpModule : MonoBehaviour
                 double[] dataArray = new double[data.Length / 8];
                 Buffer.BlockCopy(data, 0, dataArray, 0, data.Length);
 
-                Debug.Log("Received data: " + string.Join(", ", dataArray));
-                debugText = string.Join(", ", dataArray);
+                
+                // // UI 업데이트는 메인 스레드에서만 가능하므로 변수에 저장                
+                debugText = string.Join(", ", dataArray[62], dataArray[63]); 
+                UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                {
+                    timeText.text = $"Input data : {debugText} ms";
+
+                });
 
                 // python : send_data = outs.flatten().tolist() + [float(valid_gesture_idx), float(time.time()*1000)]
                 double[] handPose = new double[63];
                 Array.Copy(dataArray, 0, handPose, 0, 63);
 
                 double gestureIdx = dataArray[63];
-
-                handTemplate.GetInputMessage(handPose, (int)gestureIdx);
+                demoManager.GetInputMessage(handPose, (int)gestureIdx);
 
 
                 // 🔹 지연 시간 계산
@@ -94,7 +99,11 @@ public class UdpModule : MonoBehaviour
             }
             catch (SocketException ex)
             {
-                Debug.Log("SocketException: " + ex.Message);
+                UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                {
+                    timeText.text = $"SocketException:  {ex.Message} ms";
+
+                });
             }
         }
     }

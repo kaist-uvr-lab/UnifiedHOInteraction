@@ -43,11 +43,12 @@ PV_FPS = 30
 BUFFER_SIZE = 10
 
 # Depth processing interval (process every N frames)
-NUM_DEPTH_COUNT = 1
+NUM_DEPTH_COUNT = 1#0
 
 # Gesture Sequence Settings
 SEQ_LEN = 16
 THRESHOLD_NUM = 5
+
 
 
 # ==============================================================================
@@ -60,11 +61,11 @@ def main():
     # track_hand_v1 = HandTracker()
     flag_hand_model = True  # Default to v2
     flag_save = True
+    flag_vis = True
 
     gesture_ckpt_path = f"./gestureclassifier/checkpoints/{CKPT_NAME}"
     track_gesture = GestureClassfier(ckpt=gesture_ckpt_path, seq_len=SEQ_LEN, model_opt=1)
 
-    track_obj = None
     track_obj = ObjTracker()
 
     # --- Initialize Communication with HoloLens 2 ---
@@ -87,9 +88,6 @@ def main():
     gesture_cnt = 0
     valid_gesture = None
     valid_gesture_idx = -1
-
-    # Dummy pose data for sending when no hand is detected
-    debug_pose = np.ones((21, 3))
 
     try:
         while True:
@@ -121,15 +119,17 @@ def main():
             color, depth = result
 
             # Display RGB and scaled Depth
-            cv2.imshow('RGB', color)
-            if flag_depth:
-                depth_norm = (depth / max_depth * 255).astype('uint8')
-                cv2.imshow('Depth', depth_norm)
+            if flag_vis:
+                cv2.imshow('RGB', color)
+                if flag_depth:
+                    depth_norm = (depth / max_depth * 255).astype('uint8')
+                    cv2.imshow('Depth', depth_norm)
+                cv2.waitKey(1)
 
-                if flag_save:
-                    cv2.imwrite(os.path.join("./output", "rgb", f"rgb_{idx}.png"), color)
-                    cv2.imwrite(os.path.join("./output", "depth", f"depth_{idx}.png"), depth_norm)
-            cv2.waitKey(1)
+            if flag_save:
+                cv2.imwrite(os.path.join("./output", "rgb", f"rgb_{idx}.png"), color)
+                cv2.imwrite(os.path.join("./output", "depth", f"depth_{idx}.png"), depth_norm)
+
 
             # Resize color image for model input
             color = cv2.resize(color, dsize=(640, 360), interpolation=cv2.INTER_AREA)
@@ -191,10 +191,12 @@ def main():
                             else:
                                 flag_gesture = False
 
-                        cv2.imshow("obj", vis_obj)
+                        if flag_vis:
+                            cv2.imshow("obj", vis_obj)
                         if flag_save:
                             cv2.imwrite(os.path.join("./output", "obj", f"obj_{idx}.png"), vis_obj)
-
+            else:
+                flag_gesture = True
             # --- Run Gesture Recognition ---
             # Run if interaction flag is set OR interaction detection is disabled
             gesture = None
@@ -230,23 +232,23 @@ def main():
 
             # --- Send Data to HoloLens 2 ---
             # Check cooldown (0.5 sec delay)
-            if time.time() - t_cooldown > 0.5:
+            if time.time() - t_cooldown > 0.3:
                 flag_cooldown = False
-
             if not flag_cooldown and valid_gesture is not None and valid_gesture != "Natural":
-                send_data = outs.flatten().tolist() + [float(valid_gesture_idx), float(time.time() * 1000)]
+                send_data = outs.flatten().tolist() + [float(valid_gesture_idx), 0.0] #float(time.time() * 1000)]
                 flag_cooldown = True
                 t_cooldown = time.time()
-                print("sending ... ", valid_gesture)
-            else:
-                # Send dummy data when no valid gesture
-                debug_pose_flat = np.ones((63))
-                send_data = debug_pose_flat.tolist() + [float(-1), float(time.time() * 1000)]
+                print(f"sending ... {valid_gesture_idx}: {valid_gesture}")
 
-            fmt = f"{len(send_data)}d"
-            send_bytes = struct.pack(fmt, *send_data)
+                fmt = f"{len(send_data)}d"
+                send_bytes = struct.pack(fmt, *send_data)
 
-            sock.sendto(send_bytes, (HOST_ADDRESS, 5005))
+                sock.sendto(send_bytes, (HOST_ADDRESS, 5005))
+
+                # reset after sending gesture
+                valid_gesture = None
+                valid_gesture_idx = -1
+                queue_righthand.clear()
 
     finally:
         # Cleanup

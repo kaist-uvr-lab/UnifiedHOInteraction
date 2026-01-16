@@ -43,7 +43,7 @@ PV_FPS = 30
 BUFFER_SIZE = 10
 
 # Depth processing interval (process every N frames)
-NUM_DEPTH_COUNT = 1#0
+NUM_DEPTH_COUNT = 10
 
 # Gesture Sequence Settings
 SEQ_LEN = 16
@@ -60,8 +60,8 @@ def main():
     track_hand_v2 = HandTracker_v2()
     # track_hand_v1 = HandTracker()
     flag_hand_model = True  # Default to v2
-    flag_save = True
-    flag_vis = True
+    flag_save = False
+    flag_vis = False
 
     gesture_ckpt_path = f"./gestureclassifier/checkpoints/{CKPT_NAME}"
     track_gesture = GestureClassfier(ckpt=gesture_ckpt_path, seq_len=SEQ_LEN, model_opt=1)
@@ -232,7 +232,7 @@ def main():
 
             # --- Send Data to HoloLens 2 ---
             # Check cooldown (0.5 sec delay)
-            if time.time() - t_cooldown > 0.3:
+            if time.time() - t_cooldown > 0.0:
                 flag_cooldown = False
             if not flag_cooldown and valid_gesture is not None and valid_gesture != "Natural":
                 send_data = outs.flatten().tolist() + [float(valid_gesture_idx), 0.0] #float(time.time() * 1000)]

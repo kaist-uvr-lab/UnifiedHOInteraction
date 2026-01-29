@@ -4,6 +4,9 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
+using Microsoft.MixedReality.Toolkit.Input;
+using Microsoft.MixedReality.Toolkit.Utilities;
+
 
 public class DemoManager : MonoBehaviour
 {
@@ -77,13 +80,20 @@ public class DemoManager : MonoBehaviour
     float fadeDuration = 0.5f;
     
 
+    public Handedness handedness = Handedness.Right;
+
+    private Vector3 prevHandPos;
+    private bool hasPrev = false;
+
+    private bool isGrabbing = false;
+    private bool isInit = true;
 
     
     // Start is called before the first frame update
     void Start()
     {
-        // PannelApp.SetActive(false);
-        // MusicApp.SetActive(false);
+        PannelApp.SetActive(false);
+        MusicApp.SetActive(false);
 
         panelCanvasGroup = PannelApp.GetComponent<CanvasGroup>();
         if (panelCanvasGroup == null)
@@ -192,16 +202,20 @@ public class DemoManager : MonoBehaviour
                     InputString = "";
                     break;
                 case "tap":                
-                    pannelDict[curIndex.ToString()].onClick.Invoke();
+                    // pannelDict[curIndex.ToString()].onClick.Invoke();
+                    event_ActivateApp(MusicApp);
+                    mode = "music";
 
                     var colors = pannelDict[curIndex.ToString()].colors;
                     pannelDict[curIndex.ToString()].targetGraphic.color = colors.pressedColor;
                     StartCoroutine(ResetColor(pannelDict[curIndex.ToString()], colors.disabledColor, 0.4f));
-
-                    mode = "music";
+                    
                     StartCoroutine(HidePanelAfterDelay(PannelApp, 0.4f));
 
                     InputString = "";
+                    break;
+                default:
+                    pannelDict[curIndex.ToString()].Select();
                     break;
             }
         
@@ -210,9 +224,9 @@ public class DemoManager : MonoBehaviour
             switch (InputString)
             {
                 case "tap":
-                    HideApp(MusicApp);
+                    isGrabbing = !isGrabbing;
+                    isInit = true;
 
-                    mode = "init";
                     InputString = "";
                     break;                
                 case "cclock":
@@ -224,13 +238,14 @@ public class DemoManager : MonoBehaviour
                     InputString = "";
                     break;
                 case "down":
-                    StartCoroutine(DecreaseVolume());
+                    HideApp(MusicApp);
+                    mode = "init";
+
                     InputString = "";
                     break;
-                case "up":
-                    StartCoroutine(IncreaseVolume());
-                    InputString = "";
-                    break;
+                // case "up":
+                //     InputString = "";
+                //     break;
                 case "left":
                     textureIdx -= 1;
                     if (textureIdx < 0)
@@ -252,6 +267,39 @@ public class DemoManager : MonoBehaviour
                     break;
                 
             }
+
+
+        if (isGrabbing)
+        {
+            MixedRealityPose handPose;
+            bool handFound = HandJointUtils.TryGetJointPose(TrackedHandJoint.Palm, handedness, out handPose);
+
+            if (handFound)
+            {
+                
+                if (isInit)
+                {
+                    prevHandPos = handPose.Position;
+                    isInit = false;
+                }
+                Vector3 currentHandPos = handPose.Position;
+
+                if (hasPrev)
+                {
+                    Vector3 delta = (currentHandPos - prevHandPos) * 10.0f;
+
+                    // 오브젝트 이동
+                    MusicApp.transform.position += delta;
+                }
+
+                prevHandPos = currentHandPos;
+                hasPrev = true;
+            }
+            else
+            {
+                hasPrev = false;
+            }
+        }
 
 
         // // For debugging with keyboard input

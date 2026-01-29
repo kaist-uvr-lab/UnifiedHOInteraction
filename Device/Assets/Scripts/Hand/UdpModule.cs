@@ -50,12 +50,12 @@ public class UdpModule : MonoBehaviour
 
                 
                 // // UI 업데이트는 메인 스레드에서만 가능하므로 변수에 저장                
-                debugText = string.Join(", ", dataArray[62], dataArray[63]); 
-                UnityMainThreadDispatcher.Instance().Enqueue(() =>
-                {
-                    timeText.text = $"Input data : {debugText} ms";
+                // debugText = string.Join(", ", dataArray[62], dataArray[63]); 
+                // UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                // {
+                //     timeText.text = $"Input data : {debugText} ms";
 
-                });
+                // });
 
                 // python : send_data = outs.flatten().tolist() + [float(valid_gesture_idx), float(time.time()*1000)]
                 double[] handPose = new double[63];

@@ -1,6 +1,6 @@
-# UnifiedHOInteraction
+# A Unified Hand and Gesture Tracking via Offloading Framework for Object-mediated Interaction in Wearable AR - UnifiedHOInteraction
 
-This repository contains instructions on generating custom dataset and code of the work `A Unified Hand and Gesture Tracking via Offloading Framework for Object-mediated Interaction in Wearable AR` presented at ().
+Woojin Cho, Taewook Ha, Taejun Son, Woontack Woo, VR2026
 
 
 ## Overview
